@@ -1,10 +1,12 @@
 using AspNetCoreVueJs.Web.Data;
 using AspNetCoreVueJs.Web.Data.Entities;
+using AspNetCoreVueJs.Web.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +57,10 @@ namespace AspNetCoreVueJs.Web
             DbContextExtensions.UserManager = provider.GetService<UserManager<AppUser>>();
             DbContextExtensions.RoleManager = provider.GetService<RoleManager<AppRole>>();
 
-
+            services.Configure<RazorViewEngineOptions>(options => {
+                options.ViewLocationExpanders.Add(
+                    new FeatureLocationExpander());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
