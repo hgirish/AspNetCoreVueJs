@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AspNetCoreVueJs.Web.Data;
+using AspNetCoreVueJs.Web.Data.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +23,15 @@ namespace AspNetCoreVueJs.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EcommerceContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<EcommerceContext>()
+                .AddDefaultTokenProviders();
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -38,6 +46,15 @@ namespace AspNetCoreVueJs.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            DbContextExtensions.UserManager =
+               services.BuildServiceProvider()
+               .GetService<UserManager<AppUser>>();
+
+            var provider = services.BuildServiceProvider();
+            DbContextExtensions.UserManager = provider.GetService<UserManager<AppUser>>();
+            DbContextExtensions.RoleManager = provider.GetService<RoleManager<AppRole>>();
+
 
         }
 
