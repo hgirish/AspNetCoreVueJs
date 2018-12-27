@@ -1,0 +1,26 @@
+{
+  "name": "clientapp",
+  "version": "1.0.0",
+  "description": "vue app based on  cli 3",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "2.5.21"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "3.2.0",
+    "@vue/cli-plugin-eslint": "3.2.1",
+    "@vue/cli-service": "3.2.0",
+    "@vue/eslint-config-prettier": "4.0.1",
+    "babel-eslint": "10.0.1",
+    "eslint": "5.11.1",
+    "eslint-plugin-vue": "5.0.0",
+    "vue-template-compiler": "2.5.21"
+  }
+}
