@@ -16,20 +16,30 @@ namespace AspNetCoreVueJs.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var sqliteConnectionString = Configuration.GetConnectionString("SqliteConnectionString");
+            var dbPath  = sqliteConnectionString.Replace("Data Source=", "").Trim();
+            if (!System.IO.Path.IsPathFullyQualified(dbPath))
+            {
+                var contentPath = HostingEnvironment.ContentRootPath;
+                dbPath = System.IO.Path.Combine(contentPath, dbPath);
+                sqliteConnectionString = "Data Source=" + dbPath;
+            }
             services.AddDbContext<EcommerceContext>(options =>
             {
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                 options.UseSqlite(Configuration.GetConnectionString("SqliteConnectionString"));
+                 options.UseSqlite(sqliteConnectionString);
                 //options.UseInMemoryDatabase("VueEcommerce");
             });
 

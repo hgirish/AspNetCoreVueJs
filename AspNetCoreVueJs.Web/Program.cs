@@ -1,8 +1,12 @@
+using AspNetCoreVueJs.Web.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Linq;
 
 namespace AspNetCoreVueJs.Web
 {
@@ -21,7 +25,19 @@ namespace AspNetCoreVueJs.Web
             //    dbContext.Database.Migrate();
             //    dbContext.EnsureSeeded();
             //}
-        
+            var seed = args.Any(x => x == "/seed");
+            if (seed)
+            {
+                args = args.Except(new[] { "/seed" }).ToArray();
+            }
+            if (seed)
+            {
+                Console.WriteLine("Seeding data");
+                SeedData.EnsureSeedData(host.Services);
+                return;
+            }
+
+
             host.Run();
         }
 
