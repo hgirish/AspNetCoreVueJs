@@ -25,7 +25,8 @@ namespace AspNetCoreVueJs.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<EcommerceContext>(options => {
+            services.AddDbContext<EcommerceContext>(options =>
+            {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
@@ -47,6 +48,7 @@ namespace AspNetCoreVueJs.Web
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
+                
             });
 
             DbContextExtensions.UserManager =
@@ -57,7 +59,8 @@ namespace AspNetCoreVueJs.Web
             DbContextExtensions.UserManager = provider.GetService<UserManager<AppUser>>();
             DbContextExtensions.RoleManager = provider.GetService<RoleManager<AppRole>>();
 
-            services.Configure<RazorViewEngineOptions>(options => {
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
                 options.ViewLocationExpanders.Add(
                     new FeatureLocationExpander());
             });
@@ -80,18 +83,24 @@ namespace AspNetCoreVueJs.Web
             {
                 app.UseHttpsRedirection();
             }
-           
+
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            StaticFileOptions options = new StaticFileOptions();
+            options.RequestPath = "/clientapp";
+            app.UseSpaStaticFiles(options);
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute("root", "/",
+            defaults: new { controller = "Home", action = "Index" });
+
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapSpaFallbackRoute("spa-fallback",
-                    new { controller = "Home", action = "Index" });
+                    template: "{controller}/{action=Index}/{id?}");
+                
+                //routes.MapSpaFallbackRoute("spa-fallback",
+                //    new { controller = "Home", action = "Index" });
 
             });
 

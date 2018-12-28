@@ -11,5 +11,7 @@ module.exports = {
         //port: 8081,
         //disableHostCheck: true,
         //compress:true,
-    }
+       
+    },
+    baseUrl: '/clientapp/'
 }

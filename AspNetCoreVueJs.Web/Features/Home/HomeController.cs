@@ -4,8 +4,10 @@ using AspNetCoreVueJs.Web.Models;
 
 namespace AspNetCoreVueJs.Web.Features
 {
+    
     public class HomeController : Controller
     {
+        
         public IActionResult Index()
         {
             return View();
