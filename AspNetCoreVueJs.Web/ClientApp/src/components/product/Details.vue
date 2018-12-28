@@ -43,8 +43,13 @@
 </b-container>
 </template>
 <script>
+  import Gallery from './Gallery.vue';
+
   export default {
     name: "product-details",
+    components: {
+      Gallery
+    },
     props: {
       product: {
         type: Object,
