@@ -13,5 +13,6 @@ module.exports = {
         //compress:true,
        
     },
-    baseUrl: '/clientapp/'
+    baseUrl: '/clientapp/',
+    outputDir: '../wwwroot/clientapp'
 }

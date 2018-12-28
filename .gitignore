@@ -261,3 +261,9 @@ __pycache__/
 *.pyc
 appsettings.Development.json
 **/wwwroot/lib/
+*.sqlite
+*.Production.json
+AspNetCoreVueJs.Web/ClientApp/dist/
+AspNetCoreVueJs.Web/Properties/PublishProfiles/
+AspNetCoreVueJs.Web/wwwroot/clientapp/
+AspNetCoreVueJs.Web/wwwroot/dist/

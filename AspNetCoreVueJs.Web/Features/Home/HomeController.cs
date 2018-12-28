@@ -1,15 +1,22 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreVueJs.Web.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreVueJs.Web.Features
 {
     
     public class HomeController : Controller
     {
-        
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
         public IActionResult Index()
         {
+            _logger.LogInformation("Index called");
             return View();
         }
 

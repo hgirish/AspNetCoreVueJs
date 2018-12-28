@@ -70,24 +70,25 @@
                 return this.$route.query.sort || 0;
             },
             sortedProducts() {
+                let prods = this.products.slice();
                 switch (this.sort) {
                     case 1:
-                        return this.products.sort((a, b) => {
+                        return prods.sort((a, b) => {
                             return b.price > a.price;
                         });
-                        break;
+                      //  break;
                     case 2:
-                        return this.products.sort((a, b) => {
+                        return prods.sort((a, b) => {
                             return a.name > b.name;
                         });
-                        break;
+                       // break;
                     case 3:
-                        return this.products.sort((a, b) => {
+                        return prods.sort((a, b) => {
                             return b.name > a.name;
                         });
-                        break;
+                        //break;
                     default:
-                        return this.products.sort((a, b) => {
+                        return prods.sort((a, b) => {
                             return a.price > b.price;
                         });
                 }
@@ -110,5 +111,5 @@
         .search {
                     flex:1;
                 }
-    }
+                }
 </style>

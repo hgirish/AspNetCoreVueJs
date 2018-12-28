@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace AspNetCoreVueJs.Web
 {
@@ -27,7 +28,9 @@ namespace AspNetCoreVueJs.Web
         {
             services.AddDbContext<EcommerceContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                 options.UseSqlite(Configuration.GetConnectionString("SqliteConnectionString"));
+                //options.UseInMemoryDatabase("VueEcommerce");
             });
 
             services.AddIdentity<AppUser, AppRole>()
@@ -64,6 +67,7 @@ namespace AspNetCoreVueJs.Web
                 options.ViewLocationExpanders.Add(
                     new FeatureLocationExpander());
             });
+            Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +93,7 @@ namespace AspNetCoreVueJs.Web
             options.RequestPath = "/clientapp";
             app.UseSpaStaticFiles(options);
             app.UseCookiePolicy();
-
+            app.UseDefaultFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute("root", "/",
