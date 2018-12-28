@@ -1,11 +1,11 @@
+using AspNetCoreVueJs.Web.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AspNetCoreVueJs.Web.Data;
-
 
 namespace AspNetCoreVueJs.Web.Features.Products
 {
@@ -36,30 +36,30 @@ namespace AspNetCoreVueJs.Web.Features.Products
 
             var products = await _db.Products
                 .Where(x => string.IsNullOrEmpty(q) || (
-                EF.Functions.Like(x.Name.ToLower(),Query) ||
+                EF.Functions.Like(x.Name.ToLower(), Query) ||
                 EF.Functions.Like(x.ShortDescription.ToLower(), Query) ||
-                EF.Functions.Like(x.Description.ToLower(),Query) ||
-                EF.Functions.Like(x.Brand.Name.ToLower(),Query) ||
-                EF.Functions.Like(x.OS.Name.ToLower(),Query) ||
-                x.ProductFeatures.Any(f=>EF.Functions.Like(f.Feature.Name.ToLower(),Query))
+                EF.Functions.Like(x.Description.ToLower(), Query) ||
+                EF.Functions.Like(x.Brand.Name.ToLower(), Query) ||
+                EF.Functions.Like(x.OS.Name.ToLower(), Query) ||
+                x.ProductFeatures.Any(f => EF.Functions.Like(f.Feature.Name.ToLower(), Query))
                 ))
                 .Where(x => Brands.Any() == false || Brands.Contains(x.Brand.Name))
                 .Where(x => minPrice.HasValue == false || x.ProductVariants.Any(v => v.Price >= minPrice.Value))
                 .Where(x => maxPrice.HasValue == false || x.ProductVariants.Any(v => v.Price <= maxPrice.Value))
                 .Where(x => minScreen.HasValue == false || x.ScreenSize >= Convert.ToDecimal(minScreen.Value))
                 .Where(x => maxScreen.HasValue == false || x.ScreenSize <= Convert.ToDecimal(maxScreen.Value))
-                .Where(x=> Capacity.Any() == false || x.ProductVariants.Any(v=> Capacity.Contains(v.Storage.Capacity.ToString())))
-                .Where(x=> Colors.Any() == false || x.ProductVariants.Any(v=> Colors.Contains(v.Colour.Name)))
-                .Where(x=> OS.Any() == false || OS.Contains(x.OS.Name))
-                .Where(x=> Features.Any() == false || Features.All(f=> x.ProductFeatures.Any(pf=> pf.Feature.Name == f)))
-                .Select(x=> new ProductListViewModel
+                .Where(x => Capacity.Any() == false || x.ProductVariants.Any(v => Capacity.Contains(v.Storage.Capacity.ToString())))
+                .Where(x => Colors.Any() == false || x.ProductVariants.Any(v => Colors.Contains(v.Colour.Name)))
+                .Where(x => OS.Any() == false || OS.Contains(x.OS.Name))
+                .Where(x => Features.Any() == false || Features.All(f => x.ProductFeatures.Any(pf => pf.Feature.Name == f)))
+                .Select(x => new ProductListViewModel
                 {
                     Id = x.Id,
                     Slug = x.Slug,
                     Name = x.Name,
                     ShortDescription = x.ShortDescription,
                     Thumbnail = x.Thumbnail,
-                    Price = x.ProductVariants.OrderBy(v=> v.Price).First().Price
+                    Price = x.ProductVariants.OrderBy(v => v.Price).First().Price
                 })
                 .ToListAsync();
             return Ok(products);
@@ -67,8 +67,41 @@ namespace AspNetCoreVueJs.Web.Features.Products
         [HttpGet("{slug}")]
         public async Task<IActionResult> Get(string slug)
         {
-            var product = await _db.Products.SingleOrDefaultAsync(x =>
-            x.Slug == slug);
+            var product = await _db.Products
+                .Select(x => new ProductDetailsViewModel
+            {
+                Id = x.Id,
+                Slug = x.Slug,
+                Name = x.Name,
+                ShortDescription = x.ShortDescription,
+                Description = x.Description,
+                Price = x.ProductVariants.OrderBy(v => v.Price).First().Price,
+                Thumbnail = x.Thumbnail,
+                Images = x.Images.Select(i => i.Url),
+                Features = x.ProductFeatures.Select(f => f.Feature.Name),
+                Colours = x.ProductVariants.Select(v => new SelectListItem
+                {
+                    Value = v.ColourId.ToString(),
+                    Text = v.Colour.Name
+                }).Distinct(),
+                Storage = x.ProductVariants.Select(v => new SelectListItem
+                {
+                    Value = v.StorageId.ToString(),
+                    Text = v.Storage.Capacity.ToString() + "GB"
+                }).Distinct(),
+                Variants = x.ProductVariants
+                .Select(v => new ProductVariantViewModel
+                {
+                    ProductId = x.Id,
+                    Name = x.Name,
+                    Thumbnail = x.Thumbnail,
+                    ColourId = v.ColourId,
+                    Colour = v.Colour.Name,
+                    StorageId = v.StorageId,
+                    Capacity = $"{v.Storage.Capacity}GB",
+                    Price = v.Price
+                })
+            }).FirstOrDefaultAsync(x => x.Slug == slug);
 
             if (product == null)
             {

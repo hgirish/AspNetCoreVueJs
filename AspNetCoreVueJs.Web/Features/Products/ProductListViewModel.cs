@@ -1,4 +1,4 @@
-namespace  AspNetCoreVueJs.Web.Features.Products
+namespace AspNetCoreVueJs.Web.Features.Products
 {
     internal class ProductListViewModel
     {

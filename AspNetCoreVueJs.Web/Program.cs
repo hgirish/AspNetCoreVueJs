@@ -14,7 +14,7 @@ namespace AspNetCoreVueJs.Web
     {
         public static void Main(string[] args)
         {          
-
+           
             var host = CreateWebHostBuilder(args).Build();
 
             //using (var scope = host.Services.CreateScope())
