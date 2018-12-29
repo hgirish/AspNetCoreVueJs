@@ -14,5 +14,6 @@ module.exports = {
        
     },
     baseUrl: '/clientapp/',
-    outputDir: '../wwwroot/clientapp'
+    outputDir: '../wwwroot/clientapp',
+ 
 }

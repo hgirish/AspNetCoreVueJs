@@ -42,7 +42,8 @@
             
         },
         watch: {
-            value(newValue) {
+            value() {
+                
                 this.search();
             }
         }

@@ -47,8 +47,7 @@ namespace AspNetCoreVueJs.Web
                 .UseStartup<Startup>()
                 .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
                 .ReadFrom.Configuration(hostingContext.Configuration)
-                .Enrich.FromLogContext()
-                .WriteTo.File(hostingContext.Configuration["Serilog:LogFileName"]));
+                );
         }
     }
 }
