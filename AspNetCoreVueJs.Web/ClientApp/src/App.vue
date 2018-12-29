@@ -34,6 +34,9 @@ export default {
   name: "app",
   components: {
     CartSummary
+  },
+  beforeCreate() {
+    this.$store.commit("initialize");
   }
 };
 </script>
