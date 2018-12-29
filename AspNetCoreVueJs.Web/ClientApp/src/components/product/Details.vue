@@ -35,7 +35,7 @@
           <b>Price:</b>
           ${{variant.price}}
         </p>
-        <b-button variant="primary">Add to Cart</b-button>
+        <b-button variant="primary" @click="addProductToCart">Add to Cart</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -78,6 +78,9 @@ export default {
     openGallery(index) {
       this.index = index;
       this.open = true;
+    },
+    addProductToCart() {
+      this.$store.dispatch("addProductToCart", this.variant);
     }
   },
   created() {
