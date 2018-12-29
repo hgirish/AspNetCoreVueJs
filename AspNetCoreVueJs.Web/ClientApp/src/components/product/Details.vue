@@ -33,7 +33,7 @@
         </b-form-group>
         <p class="mt-4 mb-4">
           <b>Price:</b>
-          ${{variant.price}}
+          {{variant.price | currency}}
         </p>
         <b-button variant="primary" @click="addProductToCart">Add to Cart</b-button>
       </b-col>
