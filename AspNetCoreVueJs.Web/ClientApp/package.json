@@ -1,16 +1,15 @@
 {
   "name": "clientapp",
   "version": "1.0.0",
-  "description": "vue app based on  cli 3",
   "private": true,
+  "description": "vue app based on  cli 3",
+  "author": "",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "format": "prettier-eslint \"src/**/*.js\""
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
     "lodash": "^4.17.11",
@@ -18,7 +17,8 @@
     "velocity-animate": "^1.5.2",
     "vue": "2.5.21",
     "vue-router": "^3.0.1",
-    "vue-slider-component": "^2.8.3"
+    "vue-slider-component": "^2.8.3",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.2.0",
@@ -34,5 +34,6 @@
     "vue-cli-plugin-axios": "0.0.4",
     "vue-cli-plugin-bootstrap-vue": "^0.1.0",
     "vue-template-compiler": "2.5.21"
-  }
+  },
+  "license": "ISC"
 }
