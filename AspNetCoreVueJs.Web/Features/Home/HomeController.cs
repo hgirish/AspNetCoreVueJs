@@ -22,9 +22,9 @@ namespace AspNetCoreVueJs.Web.Features
         public IActionResult Index()
         {
             string path = Directory.GetCurrentDirectory();
-            TempData["Message"] = $"The current directory is {path}";
+           // TempData["Message"] = $"The current directory is {path}";
           
-            _logger.LogInformation($"The current directory is {path}");
+            _logger.LogWarning($"The current directory is {path}");
             var dbpath = _dbContext.Database.ProviderName;
             _logger.LogInformation(dbpath);
             return View();

@@ -29,6 +29,8 @@
   </div>
 </template>
 
+
+
 <script>
 import CartSummary from "./components/cart/CartSummary.vue";
 import AuthNavItem from "./components/app/AuthNavItem.vue";
