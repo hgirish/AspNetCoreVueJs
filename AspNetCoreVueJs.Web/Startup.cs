@@ -1,6 +1,7 @@
 using AspNetCoreVueJs.Web.Data;
 using AspNetCoreVueJs.Web.Data.Entities;
 using AspNetCoreVueJs.Web.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 namespace AspNetCoreVueJs.Web
 {
@@ -29,7 +32,7 @@ namespace AspNetCoreVueJs.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var sqliteConnectionString = Configuration.GetConnectionString("SqliteConnectionString");
-            var dbPath  = sqliteConnectionString.Replace("Data Source=", "").Trim();
+            var dbPath = sqliteConnectionString.Replace("Data Source=", "").Trim();
             if (!System.IO.Path.IsPathFullyQualified(dbPath))
             {
                 var contentPath = HostingEnvironment.ContentRootPath;
@@ -39,13 +42,45 @@ namespace AspNetCoreVueJs.Web
             services.AddDbContext<EcommerceContext>(options =>
             {
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                 options.UseSqlite(sqliteConnectionString);
+                options.UseSqlite(sqliteConnectionString);
                 //options.UseInMemoryDatabase("VueEcommerce");
             });
 
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<EcommerceContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.ClaimsIssuer = Configuration["Authentication:JwtIssuer"];
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration["Authentication:JwtIssuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["Authentication:JwtAudience"],
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            Configuration["Authentication:JwtKey"])),
+
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+
+                };
+            });
 
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -61,7 +96,7 @@ namespace AspNetCoreVueJs.Web
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
-                
+
             });
 
             DbContextExtensions.UserManager =
@@ -97,24 +132,25 @@ namespace AspNetCoreVueJs.Web
             {
                 app.UseHttpsRedirection();
             }
-
+            app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseAuthentication();
             StaticFileOptions options = new StaticFileOptions();
             options.RequestPath = "/clientapp";
             app.UseSpaStaticFiles(options);
             app.UseCookiePolicy();
-            app.UseDefaultFiles();
+           
             app.UseMvc(routes =>
             {
-                routes.MapRoute("root", "/",
-            defaults: new { controller = "Home", action = "Index" });
+            //    routes.MapRoute("root", "/",
+            //defaults: new { controller = "Home", action = "Index" });
 
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
-                
-                //routes.MapSpaFallbackRoute("spa-fallback",
-                //    new { controller = "Home", action = "Index" });
+
+                routes.MapSpaFallbackRoute("spa-fallback",
+                    new { controller = "Home", action = "Index" });
 
             });
 

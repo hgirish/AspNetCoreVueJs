@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using  AspNetCoreVueJs.Web.Data;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace  AspNetCoreVueJs.Web.Features.Users
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {

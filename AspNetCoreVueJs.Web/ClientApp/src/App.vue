@@ -17,6 +17,7 @@
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto mr-4">
             <cart-summary/>
+            <auth-nav-item/>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -24,19 +25,29 @@
         <router-view/>
       </transition>
     </div>
+    <auth-modal :show="showAuthModal"/>
   </div>
 </template>
 
 <script>
 import CartSummary from "./components/cart/CartSummary.vue";
+import AuthNavItem from "./components/app/AuthNavItem.vue";
+import AuthModal from "./components/app/AuthModal.vue";
 
 export default {
   name: "app",
   components: {
+    AuthNavItem,
+    AuthModal,
     CartSummary
   },
   beforeCreate() {
     this.$store.commit("initialize");
+  },
+  computed: {
+    showAuthModal() {
+      return this.$store.state.showAuthModal;
+    }
   }
 };
 </script>

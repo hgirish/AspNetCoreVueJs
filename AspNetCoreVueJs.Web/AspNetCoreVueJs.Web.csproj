@@ -53,6 +53,18 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+  
+   <!-- these are your instructions; name is arbitrary, `AfterTargets` says when -->
+  <Target Name="CleanTempDirectory" AfterTargets="AfterPublish">
+    <!-- use 'importance=high' to show in the Output window (?) -->
+    <Message Text="Cleaning up publish temp directories" Importance="high" />
+
+    <!-- here, specify the directory(ies) to clear; can use build event macros -->
+    <CreateItem Include="wwwroot\clientapp\**">
+      <Output ItemName="GeneratedFiles" TaskParameter="Include" />
+    </CreateItem>
+    <Delete Files="@(GeneratedFiles)" />
+  </Target>
 
 
 </Project>
