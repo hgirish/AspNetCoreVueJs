@@ -1,5 +1,5 @@
 import Vue from "vue";
-//import axios from 'axios';
+import axios from "axios";
 import BootstrapVue from "bootstrap-vue";
 import App from "./App.vue";
 import router from "./router.js";
@@ -23,6 +23,17 @@ Vue.use(BootstrapVue);
 
 Vue.filter("currency", currency);
 
+const initialStore = localStorage.getItem("store");
+
+if (initialStore) {
+  store.commit("initialize", JSON.parse(initialStore));
+
+  if (store.getters.isAuthenticated) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${
+      store.state.auth.access_token
+    }`;
+  }
+}
 new Vue({
   router,
   store,

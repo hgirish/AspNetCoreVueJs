@@ -22,7 +22,7 @@ export default {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     },
-    fullNmae() {
+    fullName() {
       return `${this.$store.state.auth.firstName} ${
         this.$store.state.auth.lastName
       }`;

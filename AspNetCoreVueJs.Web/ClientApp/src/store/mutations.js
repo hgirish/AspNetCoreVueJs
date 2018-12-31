@@ -1,8 +1,5 @@
-export const initialize = state => {
-  const store = localStorage.getItem("store");
-  if (store) {
-    Object.assign(state, JSON.parse(store));
-  }
+export const initialize = (state, payload) => {
+  Object.assign(state, payload);
 };
 
 export const addProductToCart = (state, product) => {

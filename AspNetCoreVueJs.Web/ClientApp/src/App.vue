@@ -41,9 +41,7 @@ export default {
     AuthModal,
     CartSummary
   },
-  beforeCreate() {
-    this.$store.commit("initialize");
-  },
+
   computed: {
     showAuthModal() {
       return this.$store.state.showAuthModal;
