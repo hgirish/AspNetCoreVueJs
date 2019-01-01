@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System;
 using System.Text;
 
@@ -163,6 +164,8 @@ namespace AspNetCoreVueJs.Web
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:8080");
                 }
             });
+
+            StripeConfiguration.SetApiKey(Configuration["Stripe:PrivateKey"]);
         }
     }
 }

@@ -11,7 +11,9 @@
             v-validate="'required|min:3'"
             :state="state('first name')"
           />
-          <b-form-invalid-feedback>{{ vErrors.first('first name')}}</b-form-invalid-feedback>
+          <b-form-invalid-feedback>{{
+            vErrors.first("first name")
+          }}</b-form-invalid-feedback>
         </b-form-group>
       </b-col>
       <b-col>
@@ -23,7 +25,9 @@
             v-validate="'required|min:3'"
             :state="state('last name')"
           />
-          <b-form-invalid-feedback>{{ vErrors.first('last name') }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback>{{
+            vErrors.first("last name")
+          }}</b-form-invalid-feedback>
         </b-form-group>
       </b-col>
     </b-row>
@@ -37,15 +41,18 @@
         validate="'required'"
         :state="state('address')"
       />
-      <b-form-invalid-feedback>{{ vErrors.first('address') }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{
+        vErrors.first("address")
+      }}</b-form-invalid-feedback>
     </b-form-group>
 
     <b-form-group>
-      <label>
-        Address 2
-        <span class="text-muted">(Optional)</span>
-      </label>
-      <b-form-input v-model="address2" data-vv-name="address 2" :state="state('address 2')"/>
+      <label> Address 2 <span class="text-muted">(Optional)</span> </label>
+      <b-form-input
+        v-model="address2"
+        data-vv-name="address 2"
+        :state="state('address 2')"
+      />
     </b-form-group>
 
     <b-form-group>
@@ -57,7 +64,9 @@
         validate="'required'"
         :state="state('town / city')"
       />
-      <b-form-invalid-feedback>{{ vErrors.first('town / city') }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{
+        vErrors.first("town / city")
+      }}</b-form-invalid-feedback>
     </b-form-group>
 
     <b-form-group>
@@ -68,7 +77,9 @@
         v-validate="'required'"
         :state="state('county')"
       />
-      <b-form-invalid-feedback>{{ vErrors.first('county') }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{
+        vErrors.first("county")
+      }}</b-form-invalid-feedback>
     </b-form-group>
 
     <b-form-group>
@@ -80,7 +91,9 @@
         validate="'required'"
         :state="state('postcode')"
       />
-      <b-form-invalid-feedback>{{ vErrors.first('postcode') }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{
+        vErrors.first("postcode")
+      }}</b-form-invalid-feedback>
     </b-form-group>
 
     <h4 class="mb-4">Payment details</h4>
@@ -92,7 +105,9 @@
         v-validate="'required'"
         :state="state('name on card')"
       />
-      <b-form-invalid-feedback>{{ vErrors.first('name on card') }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{
+        vErrors.first("name on card")
+      }}</b-form-invalid-feedback>
     </b-form-group>
 
     <b-form-group>
@@ -100,9 +115,15 @@
       <div ref="card" class="form-control"></div>
     </b-form-group>
 
-    <b-button :disabled="loading" type="submit" variant="primary" size="lg" block class="mt-4 mb-4">
-      Checkout
-      <span v-if="loading" class="fas fa-spinner fa-spin"></span>
+    <b-button
+      :disabled="loading"
+      type="submit"
+      variant="primary"
+      size="lg"
+      block
+      class="mt-4 mb-4"
+    >
+      Checkout <span v-if="loading" class="fas fa-spinner fa-spin"></span>
     </b-button>
   </form>
 </template>

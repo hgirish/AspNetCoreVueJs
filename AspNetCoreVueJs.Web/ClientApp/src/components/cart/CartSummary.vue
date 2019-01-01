@@ -2,11 +2,10 @@
   <b-nav-item id="Cart" to="/cart">
     <i class="fas fa-shopping-cart"></i>
 
-    
-    Cart ({{count}})
+    Cart ({{ count }})
     <b-popover target="Cart" triggers="hover">
-      <div>Items: {{count}}</div>
-      <div>Total: {{total | currency}}</div>
+      <div>Items: {{ count }}</div>
+      <div>Total: {{ total | currency }}</div>
     </b-popover>
   </b-nav-item>
 </template>

@@ -63,7 +63,9 @@
     <CreateItem Include="wwwroot\clientapp\**">
       <Output ItemName="GeneratedFiles" TaskParameter="Include" />
     </CreateItem>
+    
     <Delete Files="@(GeneratedFiles)" />
+  <Delete Files="wwwroot\clientapp" />
   </Target>
 
 

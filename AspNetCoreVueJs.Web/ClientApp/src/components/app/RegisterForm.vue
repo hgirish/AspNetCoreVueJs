@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="submit" class="p-2">
-    <b-alert variant="danger" :show="errors !== null" dismissible @dismissed="errors = null">
-      <div v-for="(error, index) in errors" :key="index">{{ error[0] }}</div>
+    <b-alert variant="danger" :show="regErrors !== null" dismissible @dismissed="regErrors = null">
+      <div v-for="(error, index) in regErrors" :key="index">{{ error[0] }}</div>
     </b-alert>
     <b-form-group label="First Name">
       <b-form-input v-model.trim="firstName"/>
@@ -35,7 +35,7 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
-      errors: null
+      regErrors: null
     };
   },
   computed: {
@@ -56,7 +56,7 @@ export default {
       this.$store
         .dispatch("register", payload)
         .then(() => {
-          this.errors = null;
+          this.regErrors = null;
           this.firstName = "";
           this.lastName = "";
           this.email = "";
@@ -67,14 +67,14 @@ export default {
         })
         .catch(error => {
           if (typeof error.data === "string" || error.data instanceof String) {
-            this.errors = { error: [error.data] };
+            this.regErrors = { error: [error.data] };
           } else {
-            this.errors = error.data;
+            this.regErrors = error.data;
           }
         });
     },
     close() {
-      this.errors = null;
+      this.regErrors = null;
       this.$emit("close");
     }
   }

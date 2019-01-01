@@ -4,6 +4,7 @@ import Catalogue from "./pages/Catalogue.vue";
 import Product from "./pages/Product.vue";
 import Cart from "./pages/Cart.vue";
 import Checkout from "./pages/Checkout.vue";
+import Account from "./pages/Account.vue";
 
 import NProgress from "nprogress";
 import store from "./store";
@@ -33,6 +34,14 @@ const router = new VueRouter({
       name: "checkout",
       path: "/checkout",
       component: Checkout,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      name: "account",
+      path: "/account",
+      component: Account,
       meta: {
         requiresAuth: true
       }

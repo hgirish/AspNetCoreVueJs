@@ -3,26 +3,28 @@
     <td>
       <b-row align-v="center">
         <b-col cols="auto">
-          <img :src="item.thumbnail" :alt="item.name">
+          <img :src="item.thumbnail" :alt="item.name" />
         </b-col>
         <b-col class="align-middle">
-          <h5>{{item.name}}</h5>
+          <h5>{{ item.name }}</h5>
           <div>
-            Colour:
-            <strong>{{item.colour}}</strong>
+            Colour: <strong>{{ item.colour }}</strong>
           </div>
           <div>
-            Capacity:
-            <strong>{{item.capacity}}</strong>
+            Capacity: <strong>{{ item.capacity }}</strong>
           </div>
         </b-col>
       </b-row>
     </td>
-    <td>{{item.price | currency}}</td>
+    <td>{{ item.price | currency }}</td>
     <td>
-      <b-form-input type="number" :value="item.quantity" @change="setProductQuantity"></b-form-input>
+      <b-form-input
+        type="number"
+        :value="item.quantity"
+        @change="setProductQuantity"
+      ></b-form-input>
     </td>
-    <td>{{item.price * item.quantity | currency}}</td>
+    <td>{{ (item.price * item.quantity) | currency }}</td>
     <td>
       <b-button variant="danger" @click="removeProductFromCart">
         <i class="fas fa-trash-alt"></i>
@@ -30,8 +32,6 @@
     </td>
   </tr>
 </template>
-
-
 
 <script>
 export default {

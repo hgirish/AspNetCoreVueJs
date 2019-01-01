@@ -4,7 +4,7 @@ import BootstrapVue from "bootstrap-vue";
 import App from "./App.vue";
 import router from "./router.js";
 import store from "./store";
-import { currency } from "./filters";
+import { currency, date } from "./filters";
 import VeeValidate from "vee-validate";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -26,6 +26,7 @@ Vue.use(VeeValidate, {
 });
 
 Vue.filter("currency", currency);
+Vue.filter("date", date);
 
 const initialStore = localStorage.getItem("store");
 

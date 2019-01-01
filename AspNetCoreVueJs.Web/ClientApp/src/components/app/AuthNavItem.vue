@@ -2,16 +2,18 @@
   <b-nav-item-dropdown v-if="isAuthenticated" right>
     <template slot="button-content">
       <i class="fas fa-user"></i>
-      {{fullName}}
+      {{ fullName }}
     </template>
+    <b-dropdown-item to="/account">
+      <i class="fas fa-user"></i>
+      My Account
+    </b-dropdown-item>
     <b-dropdown-item @click="logout">
-      <i class="fas fa-sign-out-alt"></i>
-      Logout
+      <i class="fas fa-sign-out-alt"></i> Logout
     </b-dropdown-item>
   </b-nav-item-dropdown>
   <b-nav-item v-else @click="login">
-    <i class="fas fa-user"></i>
-    Login / Register
+    <i class="fas fa-user"></i> Login / Register
   </b-nav-item>
 </template>
 

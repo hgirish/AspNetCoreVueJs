@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace  AspNetCoreVueJs.Web.Data.Entities
+namespace AspNetCoreVueJs.Web.Data.Entities
 {
     public class OS
     {
@@ -12,3 +12,4 @@ namespace  AspNetCoreVueJs.Web.Data.Entities
         public List<Product> Products = new List<Product>();
     }
 }
+

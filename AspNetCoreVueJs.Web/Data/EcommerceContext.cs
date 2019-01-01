@@ -20,6 +20,7 @@ namespace AspNetCoreVueJs.Web.Data
         public DbSet<ProductFeature> ProductFeatures { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<Storage> Storage { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +35,9 @@ namespace AspNetCoreVueJs.Web.Data
 
             builder.Entity<ProductVariant>()
                 .HasKey(x => new { x.ProductId, x.ColourId, x.StorageId });
+
+            builder.Entity<Order>()
+                .OwnsOne(x => x.DeliveryAddress);
 
         }
     }
