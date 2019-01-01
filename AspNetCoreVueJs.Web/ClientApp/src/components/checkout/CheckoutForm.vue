@@ -144,8 +144,6 @@ export default {
     let stripeKey = this.$store.state.stripeKey;
 
     /*global  Stripe:true*/
-
-    console.log(`stripePublishKey: ${stripeKey}`);
     let stripe = Stripe(`${stripeKey}`);
     let elements = stripe.elements();
     let style = {
