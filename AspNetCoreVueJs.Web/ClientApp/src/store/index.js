@@ -15,7 +15,8 @@ const store = new Vuex.Store({
     auth: null,
     showAuthModal: false,
     loading: false,
-    cart: []
+    cart: [],
+    stripeKey: ""
   }
 });
 

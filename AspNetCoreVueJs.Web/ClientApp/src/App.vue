@@ -5,7 +5,7 @@
       href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
       integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
       crossorigin="anonymous"
-    />
+    >
 
     <div class="app">
       <b-navbar toggleable="md" type="dark" variant="dark">
@@ -16,14 +16,16 @@
             <b-nav-item to="/products">Products</b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto mr-4">
-            <cart-summary />
-            <auth-nav-item />
+            <cart-summary/>
+            <auth-nav-item/>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-      <transition name="fade" mode="out-in"> <router-view /> </transition>
+      <transition name="fade" mode="out-in">
+        <router-view/>
+      </transition>
     </div>
-    <auth-modal :show="showAuthModal" />
+    <auth-modal :show="showAuthModal"/>
   </div>
 </template>
 
@@ -44,6 +46,9 @@ export default {
     showAuthModal() {
       return this.$store.state.showAuthModal;
     }
+  },
+  created() {
+    this.$store.dispatch("setStripeKey");
   }
 };
 </script>

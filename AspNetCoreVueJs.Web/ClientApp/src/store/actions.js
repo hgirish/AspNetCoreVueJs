@@ -69,6 +69,14 @@ export const logout = ({ commit }) => {
   delete axios.defaults.headers.common["Authorization"];
 };
 
+export const setStripeKey = ({ state, commit }) => {
+  if (!(state.stripeKey && state.stripeKey.length > 10))
+    axios.get("/api/Orders/StripePublishKey").then(response => {
+      var data = response.data;
+      commit("setStripeKey", data);
+    });
+};
+
 function findIndex(cart, product) {
   const index = cart.findIndex(
     i =>

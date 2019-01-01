@@ -24,7 +24,11 @@ export const setProductQuantity = (state, payload) => {
 
   state.cart.splice(payload.index, 1, cartItem);
 };
-
+export const setStripeKey = (state, payload) => {
+  console.log(payload);
+  state.stripeKey = payload.stripePublishKey;
+  console.log(state.stripeKey);
+};
 export const showAuthModal = state => {
   state.showAuthModal = true;
 };
