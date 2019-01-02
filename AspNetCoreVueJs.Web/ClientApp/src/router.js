@@ -28,7 +28,10 @@ const router = new VueRouter({
     {
       name: "cart",
       path: "/cart",
-      component: Cart
+      component: Cart,
+      meta: {
+        role: "Customer"
+      }
     },
     {
       name: "checkout",
@@ -43,7 +46,8 @@ const router = new VueRouter({
       path: "/account",
       component: Account,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        role: "Customer"
       }
     },
     {
@@ -64,10 +68,39 @@ router.beforeEach((to, from, next) => {
         }
       });
     } else {
-      next();
+      if (
+        to.matched.some(
+          route => route.meta.role && store.getters.isInRole(route.meta.role)
+        )
+      ) {
+        next();
+      } else if (!to.matched.some(route => route.meta.role)) {
+        next();
+      } else {
+        next({
+          path: "/"
+        });
+      }
     }
   } else {
-    next();
+    if (
+      to.matched.some(
+        route =>
+          route.meta.role &&
+          (!store.getters.isAuthenticated ||
+            store.getters.isInRole(route.meta.role))
+      )
+    ) {
+      next();
+    } else {
+      if (to.matched.some(route => route.meta.role)) {
+        next({
+          path: "/"
+        });
+      } else {
+        next();
+      }
+    }
   }
 });
 

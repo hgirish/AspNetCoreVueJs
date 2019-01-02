@@ -49,7 +49,7 @@ namespace AspNetCoreVueJs.Web.Features.Orders
             return Ok(orders);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles ="Customer")]
         public async Task<IActionResult> Create([FromBody] CreateOrderViewModel model)
         {
             if (!ModelState.IsValid)
