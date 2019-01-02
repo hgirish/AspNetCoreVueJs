@@ -5,6 +5,10 @@ import Product from "./pages/Product.vue";
 import Cart from "./pages/Cart.vue";
 import Checkout from "./pages/Checkout.vue";
 import Account from "./pages/Account.vue";
+import AdminIndex from "./pages/admin/index.vue";
+import AdminOrders from "./pages/admin/Orders.vue";
+import AdminProducts from "./pages/admin/Products.vue";
+import AdminCreateProduct from "./pages/admin/CreateProduct.vue";
 
 import NProgress from "nprogress";
 import store from "./store";
@@ -49,6 +53,30 @@ const router = new VueRouter({
         requiresAuth: true,
         role: "Customer"
       }
+    },
+    {
+      name: "admin",
+      path: "/admin",
+      component: AdminIndex,
+      meta: {
+        requiresAuth: true,
+        role: "Administrator"
+      },
+      redirect: "/admin/orders",
+      children: [
+        {
+          path: "orders",
+          component: AdminOrders
+        },
+        {
+          path: "products",
+          component: AdminProducts
+        },
+        {
+          path: "products/create",
+          component: AdminCreateProduct
+        }
+      ]
     },
     {
       path: "*",

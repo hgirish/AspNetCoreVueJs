@@ -9,5 +9,6 @@ namespace AspNetCoreVueJs.Web.Features.Orders
         public int Items { get; set; }
         public decimal Total { get; set; }
         public string PaymentStatus { get; set; }
+        public string Customer { get; internal set; }
     }
 }

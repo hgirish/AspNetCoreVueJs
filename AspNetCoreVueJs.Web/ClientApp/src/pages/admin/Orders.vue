@@ -1,16 +1,12 @@
 <template>
-  <b-container class="page pt-4">
-    <h1>My Account</h1>
-    <order-list :orders="orders"/>
-  </b-container>
+  <order-list :orders="orders"/>
 </template>
 
 <script>
 import axios from "axios";
-import OrderList from "../components/shared/OrderList.vue";
-
+import OrderList from "../../components/shared/OrderList.vue";
 export default {
-  name: "account",
+  name: "orders",
   components: {
     OrderList
   },
@@ -25,6 +21,7 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
+    // eslint-disable-next-line no-unused-vars
     const vm = this;
     axios.get("/api/orders").then(response => {
       next(vm => vm.setData(response.data));
