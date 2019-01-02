@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace  AspNetCoreVueJs.Web.Features.Users
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAdministratorRole")]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {

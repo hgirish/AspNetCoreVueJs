@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using  AspNetCoreVueJs.Web.Data.Entities;
+using AspNetCoreVueJs.Web.Models;
 
 namespace  AspNetCoreVueJs.Web.Data
 {
@@ -10,10 +11,24 @@ namespace  AspNetCoreVueJs.Web.Data
         public static RoleManager<AppRole> RoleManager { get; set; }
         public static UserManager<AppUser> UserManager { get; set; }
 
-        public static void EnsureSeeded(this EcommerceContext context)
+       
+        public static void EnsureSeeded(this EcommerceContext context, List<SeedUser> seedUsers = null)
         {
+            if (seedUsers == null || !seedUsers.Any())
+            {
+                seedUsers = new List<SeedUser>
+                {
+                    new SeedUser
+                    {
+                         FirstName = "Stu",
+                    LastName = "Ratcliffe",
+                    Email = "stu@ratcliffe.io",
+                    Roles = new string[]{"Admin" }
+                    }
+                };
+            }
             AddRoles(context);
-            AddUsers(context);
+            AddUsers(context, seedUsers);
             AddColoursFeaturesAndStorage(context);
             AddOperatingSystemsAndBrands(context);
             AddProducts(context);
@@ -30,31 +45,43 @@ namespace  AspNetCoreVueJs.Web.Data
             {
                 RoleManager.CreateAsync(new AppRole("Customer")).GetAwaiter().GetResult();
             }
+            if (RoleManager.RoleExistsAsync("Administrator").GetAwaiter().GetResult() == false)
+            {
+                RoleManager.CreateAsync(new AppRole("Administrator")).GetAwaiter().GetResult();
+            }
         }
 
-        private static void AddUsers(EcommerceContext context)
+        private static void AddUsers(EcommerceContext context, List<SeedUser> seedUsers)
         {
-            if (UserManager.FindByEmailAsync("stu@ratcliffe.io").GetAwaiter().GetResult() == null)
+            foreach (var seedUser in seedUsers)
             {
-                var user = new AppUser
+                if (UserManager.FindByEmailAsync(seedUser.Email).GetAwaiter().GetResult() == null)
                 {
-                    FirstName = "Stu",
-                    LastName = "Ratcliffe",
-                    UserName = "stu@ratcliffe.io",
-                    Email = "stu@ratcliffe.io",
-                    EmailConfirmed = true,
-                    LockoutEnabled = false
-                };
+                    var user = new AppUser
+                    {
+                        FirstName = seedUser.FirstName,
+                        LastName = seedUser.LastName,
+                        UserName = seedUser.Email,
+                        Email = seedUser.Email,
+                        EmailConfirmed = true,
+                        LockoutEnabled = false
+                    };
 
-                UserManager.CreateAsync(user, "Password1*").GetAwaiter().GetResult();
+                    UserManager.CreateAsync(user, seedUser.Password).GetAwaiter().GetResult();
+                }
+                var admin = UserManager.FindByEmailAsync(seedUser.Email).GetAwaiter().GetResult();
+                foreach (var role in seedUser.Roles)
+                {
+                    if (UserManager.IsInRoleAsync(admin,role).GetAwaiter().GetResult() == false)
+                    {
+                        UserManager.AddToRoleAsync(admin, role);
+                    }
+                }
+               
             }
+            
 
-            var admin = UserManager.FindByEmailAsync("stu@ratcliffe.io").GetAwaiter().GetResult();
-
-            if (UserManager.IsInRoleAsync(admin, "Admin").GetAwaiter().GetResult() == false)
-            {
-                UserManager.AddToRoleAsync(admin, "Admin");
-            }
+            
         }
 
         private static void AddColoursFeaturesAndStorage(EcommerceContext context)

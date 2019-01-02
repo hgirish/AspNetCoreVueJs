@@ -45,6 +45,10 @@ namespace AspNetCoreVueJs.Web.Data
             {
                 RoleManager.CreateAsync(new AppRole("Customer")).GetAwaiter().GetResult();
             }
+            if (RoleManager.RoleExistsAsync("Administrator").GetAwaiter().GetResult() == false)
+            {
+                RoleManager.CreateAsync(new AppRole("Administrator")).GetAwaiter().GetResult();
+            }
         }
 
         private static void AddUsers(EcommerceContext context, UserManager<AppUser> UserManager)

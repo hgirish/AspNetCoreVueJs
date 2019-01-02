@@ -1,6 +1,8 @@
 using AspNetCoreVueJs.Web.Data;
 using AspNetCoreVueJs.Web.Data.Entities;
 using AspNetCoreVueJs.Web.Infrastructure;
+using AspNetCoreVueJs.Web.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace AspNetCoreVueJs.Web
@@ -51,13 +54,34 @@ namespace AspNetCoreVueJs.Web
                 .AddEntityFrameworkStores<EcommerceContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options =>
+            services.ConfigureApplicationCookie(options =>
             {
-                options.DefaultAuthenticateScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                //options.Cookie.Name = "YourAppCookieName";
+                //options.Cookie.HttpOnly = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                // options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                //  options.SlidingExpiration = true;
+            });
+
+
+            services.AddAuthentication()
+            .AddCookie(options => {
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.Cookie.Name = "YourAppCookieName";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Identity/Account/Login";
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
+            } )
+            .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
@@ -83,6 +107,10 @@ namespace AspNetCoreVueJs.Web
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+            });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -91,7 +119,10 @@ namespace AspNetCoreVueJs.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddHttpsRedirection(options =>
+            {
+                options.HttpsPort = 443;
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSpaStaticFiles(configuration =>
@@ -113,6 +144,7 @@ namespace AspNetCoreVueJs.Web
                 options.ViewLocationExpanders.Add(
                     new FeatureLocationExpander());
             });
+            services.Configure<List<SeedUser>>(Configuration.GetSection("SeedUsers"));
             Serilog.Debugging.SelfLog.Enable(Console.Error);
         }
 
@@ -140,7 +172,8 @@ namespace AspNetCoreVueJs.Web
             options.RequestPath = "/clientapp";
             app.UseSpaStaticFiles(options);
             app.UseCookiePolicy();
-           
+
+         
             app.UseMvc(routes =>
             {
             //    routes.MapRoute("root", "/",
