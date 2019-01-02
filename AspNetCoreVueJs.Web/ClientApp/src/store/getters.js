@@ -20,6 +20,9 @@ export const isAuthenticated = state => {
 };
 
 export const isInRole = (state, getters) => role => {
-  const result = getters.isAuthenticated && state.auth.roles.indexOf(role) > -1;
+  const result =
+    getters.isAuthenticated &&
+    state.auth.roles &&
+    state.auth.roles.indexOf(role) > -1;
   return result;
 };

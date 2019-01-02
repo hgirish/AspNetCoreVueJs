@@ -9,7 +9,7 @@ import AdminIndex from "./pages/admin/index.vue";
 import AdminOrders from "./pages/admin/Orders.vue";
 import AdminProducts from "./pages/admin/Products.vue";
 import AdminCreateProduct from "./pages/admin/CreateProduct.vue";
-
+import Logout from "./pages/logout.vue";
 import NProgress from "nprogress";
 import store from "./store";
 
@@ -77,6 +77,11 @@ const router = new VueRouter({
           component: AdminCreateProduct
         }
       ]
+    },
+    {
+      name: "logout",
+      path: "/logout",
+      component: Logout
     },
     {
       path: "*",
