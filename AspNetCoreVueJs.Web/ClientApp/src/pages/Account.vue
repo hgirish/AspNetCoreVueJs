@@ -25,6 +25,7 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
+    // eslint-disable-next-line no-unused-vars
     const vm = this;
     axios.get("/api/orders").then(response => {
       next(vm => vm.setData(response.data));
