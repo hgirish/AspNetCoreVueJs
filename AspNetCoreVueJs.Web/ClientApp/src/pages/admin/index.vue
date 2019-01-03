@@ -4,7 +4,7 @@
       <b-col cols="3">
         <b-list-group>
           <b-list-group-item to="/admin/orders">Orders</b-list-group-item>
-          <b-list-group-item to="admin/products">
+          <b-list-group-item to="/admin/products">
             <i class="fas fa-mobile mr-2"></i>
             Products
           </b-list-group-item>
