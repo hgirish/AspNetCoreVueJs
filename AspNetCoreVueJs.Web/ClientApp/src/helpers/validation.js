@@ -12,7 +12,8 @@ const isUnique = value => {
 
       if (isValid) {
         return resolve({
-          valid: true
+          valid: true,
+          data: null
         });
       } else {
         return resolve({
@@ -26,7 +27,13 @@ const isUnique = value => {
   });
 };
 
-Validator.extend("uniqueProductName", {
-  validate: isUnique,
-  getMessage: (field, params, data) => data.message
-});
+Validator.extend(
+  "uniqueProductName",
+  {
+    validate: isUnique,
+    getMessage: (field, params, data) => data.message
+  },
+  {
+    immediate: false
+  }
+);

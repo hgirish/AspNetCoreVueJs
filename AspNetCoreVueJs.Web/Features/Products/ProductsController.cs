@@ -1,4 +1,7 @@
 using AspNetCoreVueJs.Web.Data;
+using AspNetCoreVueJs.Web.Data.Entities;
+using AspNetCoreVueJs.Web.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +111,98 @@ namespace AspNetCoreVueJs.Web.Features.Products
                 return NotFound();
             }
             return Ok(product);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Create([FromBody] CreateProductViewModel model)
+        {
+            var brand = await _db.Brands.FirstOrDefaultAsync(x => x.Name == model.Brand);
+
+            if (brand == null)
+            {
+                brand = new Data.Entities.Brand { Name = model.Brand };
+            }
+
+            var os = await _db.OS.FirstOrDefaultAsync(x => x.Name == model.OS);
+
+            if (os == null)
+            {
+                os = new Data.Entities.OS { Name = model.OS };
+            }
+
+            var product = new Product
+            {
+                Name = model.Name,
+                Slug = model.Name.GenerateSlug(),
+                ShortDescription = model.ShortDescription,
+                Description = model.Description,
+                TalkTime = model.TalkTime,
+                StandbyTime = model.StandbyTime,
+                ScreenSize = model.ScreenSize,
+                Brand = brand,
+                OS = os,
+                Thumbnail = "/assets/images/thumbnail.jpg",
+                Images = new List<Image>
+                {
+                    new Image { Url = "/assets/images/gallery1.jpeg" },
+                    new Image { Url = "/assets/images/gallery2.jpeg" },
+                    new Image { Url = "/assets/images/gallery3.jpeg" },
+                    new Image { Url = "/assets/images/gallery4.jpeg" },
+                    new Image { Url = "/assets/images/gallery5.jpeg" },
+                    new Image { Url = "/assets/images/gallery6.jpeg" }
+                }
+
+            };
+
+            foreach (var feature in model.Features)
+            {
+                var feat = await _db.Features.SingleAsync(x => x.Name == feature);
+                product.ProductFeatures.Add(new ProductFeature { Feature = feat });
+            }
+
+            foreach (var variant in model.Variants)
+            {
+                var colour = await _db.Colours.FirstOrDefaultAsync(x => x.Name == variant.Colour);
+
+                if (colour == null)
+                {
+                    colour = new Colour { Name = variant.Colour };
+                }
+
+                var capacity = Convert.ToInt32(variant.Storage.Substring(0, variant.Storage.IndexOf("GB")));
+                var storage = await _db.Storage.FirstOrDefaultAsync(x => x.Capacity == capacity);
+
+                if (storage == null)
+                {
+                    storage = new Storage { Capacity = capacity };
+                }
+
+                product.ProductVariants.Add(new ProductVariant
+                {
+                    Colour = colour,
+                    Storage = storage,
+                    Price = variant.Price
+                });
+
+                _db.Products.Add(product);
+
+                await _db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        [HttpPost("validate")]
+        [Authorize(Roles ="Administrator")]
+        public async Task<IActionResult> Validate([FromBody] ValidateProductViewModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.Name))
+            {
+                return Ok(true);
+            }
+            var valid = await _db.Products.AllAsync(x => x.Name.ToLower() != model.Name.ToLower());
+
+            return Ok(valid);
         }
     }
 }

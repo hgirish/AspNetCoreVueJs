@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="products && producs.length > 0">
+        <template v-if="products && products.length > 0">
           <tr v-for="product in products" :key="product.id">
             <td>{{product.id}}</td>
             <td>{{product.name}}</td>

@@ -47,6 +47,7 @@ namespace AspNetCoreVueJs.Web
             {
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 options.UseSqlite(sqliteConnectionString);
+               // options.EnableSensitiveDataLogging(true);
                 //options.UseInMemoryDatabase("VueEcommerce");
             });
 
