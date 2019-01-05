@@ -1,39 +1,24 @@
 import axios from "axios";
 import { Validator } from "vee-validate";
 
-const isUnique = value => {
-  new Promise(resolve => {
-    const payload = {
+const isUniqueName = value => {
+  return axios
+    .post("/api/products/validate", {
       name: value
-    };
-
-    axios.post("/api/products/validate", payload).then(response => {
-      const isValid = response.data;
-
-      if (isValid) {
-        return resolve({
-          valid: true,
-          data: null
-        });
-      } else {
-        return resolve({
-          valid: false,
-          data: {
-            message: "Name is already in use."
-          }
-        });
-      }
+    })
+    .then(response => {
+      // Notice that we return an object containing both a valid property and a data property.
+      return {
+        valid: response.data.valid,
+        data: {
+          message: response.data.message
+        }
+      };
     });
-  });
 };
 
-Validator.extend(
-  "uniqueProductName",
-  {
-    validate: isUnique,
-    getMessage: (field, params, data) => data.message
-  },
-  {
-    immediate: false
-  }
-);
+Validator.extend("uniqueProductName", {
+  validate: isUniqueName,
+  getMessage: (field, params, data) => data.message,
+  immediate: false
+});

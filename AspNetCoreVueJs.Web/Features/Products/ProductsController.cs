@@ -146,7 +146,7 @@ namespace AspNetCoreVueJs.Web.Features.Products
                 ScreenSize = model.ScreenSize,
                 Brand = brand,
                 OS = os,
-                Thumbnail = "/assets/images/thumbnail.jpg",
+                Thumbnail = "/assets/images/thumbnail.jpeg",
                 Images = new List<Image>
                 {
                     new Image { Url = "/assets/images/gallery1.jpeg" },
@@ -207,8 +207,12 @@ namespace AspNetCoreVueJs.Web.Features.Products
                 return Ok(true);
             }
             var valid = await _db.Products.AllAsync(x => x.Name.ToLower() != model.Name.ToLower());
-
-            return Ok(valid);
+            string message = "Name is already in use.";
+            if (valid)
+            {
+                message = ""; 
+            }
+            return Ok(new { valid, message });
         }
     }
 }
