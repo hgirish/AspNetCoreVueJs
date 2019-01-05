@@ -86,17 +86,19 @@ namespace AspNetCoreVueJs.Web.Features.Products
                 Thumbnail = x.Thumbnail,
                 Images = x.Images.Select(i => i.Url),
                 Features = x.ProductFeatures.Select(f => f.Feature.Name),
-                Colours = x.ProductVariants.Select(v => new SelectListItem
-                {
-                    Value = v.ColourId.ToString(),
-                    Text = v.Colour.Name
-                }).Distinct(),
-                Storage = x.ProductVariants.Select(v => new SelectListItem
-                {
-                    Value = v.StorageId.ToString(),
-                    Text = v.Storage.Capacity.ToString() + "GB"
-                }).Distinct(),
+                //Colours = x.ProductVariants.Select(v => new SelectListItem
+                //{
+                //    Value = v.ColourId.ToString(),
+                //    Text = v.Colour.Name
+                //}).Distinct(),
+                //Storage = x.ProductVariants.Select(v => new SelectListItem
+                //{
+                //    Value = v.StorageId.ToString(),
+                //    Text = v.Storage.Capacity.ToString() + "GB"
+                //}).Distinct(),
                 Variants = x.ProductVariants
+                .OrderBy(v=>v.Colour.Name)
+                .ThenBy(v=>v.Storage.Capacity)
                 .Select(v => new ProductVariantViewModel
                 {
                     ProductId = x.Id,
@@ -121,6 +123,15 @@ namespace AspNetCoreVueJs.Web.Features.Products
         [Authorize(Roles = "Administrator",AuthenticationSchemes = AuthSchemes)]
         public async Task<IActionResult> Create([FromBody] CreateProductViewModel model)
         {
+            var valid = await _db.Products.AllAsync(x => x.Name.ToLower() != model.Name.ToLower());
+            string message = "Product Name is already in use.";
+            if (!valid)
+            {
+                return Ok(new { error=true, message });
+            }
+            
+
+
             var brand = await _db.Brands.FirstOrDefaultAsync(x => x.Name == model.Brand);
 
             if (brand == null)

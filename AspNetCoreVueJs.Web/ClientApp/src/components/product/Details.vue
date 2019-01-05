@@ -12,12 +12,7 @@
             :key="index"
             :cols="index === 0 ? 12 : 4"
           >
-            <img
-              class="img-fluid"
-              :src="image"
-              :alt="product.name"
-              @click="openGallery(index)"
-            />
+            <img class="img-fluid" :src="image" :alt="product.name" @click="openGallery(index)">
           </b-col>
         </b-row>
       </b-col>
@@ -26,21 +21,20 @@
         <p class="mt-4 mb-4">{{ product.shortDescription }}</p>
         <h5>Features</h5>
         <ul>
-          <li v-for="feature in product.features" :key="feature">
-            {{ feature }}
-          </li>
+          <li v-for="feature in product.features" :key="feature">{{ feature }}</li>
         </ul>
         <h5>Variants</h5>
         <b-form-group label="Colour">
-          <b-form-select :options="product.colours" v-model="colour" />
+          <b-form-select :options="colours" v-model="colour"/>
         </b-form-group>
         <b-form-group label="Capacity">
-          <b-form-select :options="product.storage" v-model="capacity" />
+          <b-form-select :options="storage" v-model="capacity"/>
         </b-form-group>
-        <p class="mt-4 mb-4"><b>Price:</b> {{ variant.price | currency }}</p>
-        <b-button variant="primary" @click="addProductToCart"
-          >Add to Cart</b-button
-        >
+        <p class="mt-4 mb-4">
+          <b>Price:</b>
+          {{ variant.price | currency }}
+        </p>
+        <b-button variant="primary" @click="addProductToCart">Add to Cart</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -50,16 +44,12 @@
       </b-col>
     </b-row>
     <transition name="fade" mode="out-in">
-      <gallery
-        v-if="open"
-        :images="product.images"
-        :initial="index"
-        @close="open = false"
-      />
+      <gallery v-if="open" :images="product.images" :initial="index" @close="open = false"/>
     </transition>
   </b-container>
 </template>
 <script>
+import _ from "lodash";
 import Gallery from "./Gallery.vue";
 
 export default {
@@ -78,7 +68,10 @@ export default {
       open: false,
       index: 0,
       colour: null,
-      capacity: null
+      colours: [],
+      capacity: null,
+      storage: [],
+      variant: null
     };
   },
   methods: {
@@ -92,17 +85,56 @@ export default {
     addProductToCart() {
       this.$store.dispatch("addProductToCart", this.variant);
       this.$toastr("success", "Product added to cart successfully.");
+    },
+    computeColours() {
+      this.colours = _.uniqBy(
+        this.product.variants.map(v => {
+          return {
+            value: v.colourId,
+            text: v.colour
+          };
+        }),
+        "value"
+      );
+      this.colour = this.colours[0].value;
+    },
+    computeStorage() {
+      this.storage = this.product.variants
+        .filter(v => {
+          return v.colourId === this.colour;
+        })
+        .map(v => {
+          return {
+            value: v.storageId,
+            text: v.capacity
+          };
+        });
+      this.capacity = this.storage[0].value;
+    },
+    computeProductVariant() {
+      this.variant = this.product.variants.find(
+        v => v.colourId == this.colour && v.storageId == this.capacity
+      );
     }
   },
   created() {
-    this.colour = this.product.colours[0].value;
-    this.capacity = this.product.storage[0].value;
+    // this.colour = this.product.colours[0].value;
+    // this.capacity = this.product.storage[0].value;
+    this.computeColours();
+    this.computeStorage();
+    this.computeProductVariant();
   },
-  computed: {
-    variant() {
-      return this.product.variants.find(
-        v => v.colourId == this.colour && v.storageId == this.capacity
-      );
+  watch: {
+    colour: {
+      handler(value) {
+        this.computeStorage();
+        this.computeProductVariant();
+      }
+    },
+    capacity: {
+      handler(value) {
+        this.computeProductVariant();
+      }
     }
   }
 };

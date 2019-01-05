@@ -77,7 +77,7 @@ export default {
       }
 
       this.$emit("input", current);
-      this.$refs.input.$el.focus();
+      this.$refs.input.focus();
     }
   }
 };
