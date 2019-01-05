@@ -1,6 +1,8 @@
 using AspNetCoreVueJs.Web.Data;
 using AspNetCoreVueJs.Web.Data.Entities;
 using AspNetCoreVueJs.Web.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,7 +18,9 @@ namespace AspNetCoreVueJs.Web.Features.Products
     public class ProductsController : Controller
     {
         private readonly EcommerceContext _db;
-
+        private const string AuthSchemes =
+        CookieAuthenticationDefaults.AuthenticationScheme + "," +
+        JwtBearerDefaults.AuthenticationScheme;
         public ProductsController(EcommerceContext db)
         {
             _db = db;
@@ -114,7 +118,7 @@ namespace AspNetCoreVueJs.Web.Features.Products
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator",AuthenticationSchemes = AuthSchemes)]
         public async Task<IActionResult> Create([FromBody] CreateProductViewModel model)
         {
             var brand = await _db.Brands.FirstOrDefaultAsync(x => x.Name == model.Brand);
@@ -193,7 +197,9 @@ namespace AspNetCoreVueJs.Web.Features.Products
         }
 
         [HttpPost("validate")]
-        [Authorize(Roles ="Administrator")]
+       // [Authorize(Roles ="Administrator")]
+        [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Administrator")]
+
         public async Task<IActionResult> Validate([FromBody] ValidateProductViewModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Name))
