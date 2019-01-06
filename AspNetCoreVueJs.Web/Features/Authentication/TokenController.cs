@@ -5,9 +5,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AspNetCoreVueJs.Web.Data;
 using AspNetCoreVueJs.Web.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,14 +21,17 @@ namespace AspNetCoreVueJs.Web.Features.Authentication
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly EcommerceContext _db;
 
         public TokenController(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            EcommerceContext db)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+            _db = db;
         }
 
         [HttpPost]
@@ -82,7 +87,7 @@ namespace AspNetCoreVueJs.Web.Features.Authentication
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration["Authentication:JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Authentication:JwtExpireDays"]));
+            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Authentication:JwtExpireMins"]));
 
             var token = new JwtSecurityToken(
                 _configuration["Authentication:JwtIssuer"],
@@ -91,14 +96,40 @@ namespace AspNetCoreVueJs.Web.Features.Authentication
                 expires: expires,
                 signingCredentials: creds);
 
+            var refreshToken =
+                Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            user.RefreshToken = refreshToken;
+            await _userManager.UpdateAsync(user);
+
             return new TokenViewModel
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                AccessTokenExpiration = expires,
+               // AccessTokenExpiration = expires,
+                RefreshToken = refreshToken,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Roles = roles
             };
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.RefreshToken == model.RefreshToken);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var token = await GenerateToken(user);
+
+            return Ok(token);
         }
     }
 }

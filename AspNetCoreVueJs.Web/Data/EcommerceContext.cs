@@ -39,6 +39,10 @@ namespace AspNetCoreVueJs.Web.Data
             builder.Entity<Order>()
                 .OwnsOne(x => x.DeliveryAddress);
 
+            builder.Entity<AppUser>()
+                .HasIndex(x => x.RefreshToken)
+                .IsUnique();
+
         }
     }
 }

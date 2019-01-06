@@ -201,7 +201,8 @@ export default {
               this.$router.push("/admin/products");
             })
             .catch(error => {
-              console.log(error.data);
+              // eslint-disable-next-line no-console
+              console.error(error.data);
             });
         }
       });

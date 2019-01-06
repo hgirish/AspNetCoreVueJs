@@ -8,6 +8,7 @@ namespace AspNetCoreVueJs.Web.Data.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string RefreshToken { get; set; }
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
 

@@ -126,13 +126,13 @@ export default {
   },
   watch: {
     colour: {
-      handler(value) {
+      handler() {
         this.computeStorage();
         this.computeProductVariant();
       }
     },
     capacity: {
-      handler(value) {
+      handler() {
         this.computeProductVariant();
       }
     }
